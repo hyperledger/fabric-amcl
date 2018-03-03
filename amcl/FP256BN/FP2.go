@@ -23,7 +23,7 @@ under the License.
 
 package FP256BN
 
-//import "fmt"
+
 
 type FP2 struct {
 	a *FP

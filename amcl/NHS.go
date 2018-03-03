@@ -30,7 +30,7 @@ under the License.
 
 package amcl
 
-//import "fmt"
+
 
 
 const NHS_PRIME int32=0x3001	// q in Hex

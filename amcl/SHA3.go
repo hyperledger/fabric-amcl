@@ -30,7 +30,7 @@ under the License.
 
 package amcl
 
-//import "fmt"
+
 
 const SHA3_HASH224 int=28
 const SHA3_HASH256 int=32

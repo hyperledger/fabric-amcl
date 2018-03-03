@@ -24,7 +24,7 @@ package FP256BN
 import "strconv"
 import "github.com/hyperledger/fabric-amcl/amcl"
 
-//import "fmt"
+
 
 const MODBYTES uint=32
 const BASEBITS uint=56

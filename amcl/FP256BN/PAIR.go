@@ -21,7 +21,7 @@ under the License.
 
 package FP256BN
 
-//import "fmt"
+
 
 /* Line function */
 func line(A *ECP2,B *ECP2,Qx *FP,Qy *FP) *FP12 {

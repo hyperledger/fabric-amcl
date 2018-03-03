@@ -24,7 +24,7 @@ package FP256BN
 import "time"
 import "github.com/hyperledger/fabric-amcl/amcl"
 
-//import "fmt"
+
 
 const MFS int=int(MODBYTES)
 const MGS int=int(MODBYTES)

@@ -22,7 +22,7 @@ under the License.
 
 package FP256BN
 
-//import "fmt"
+
 
 const NOT_SPECIAL int=0
 const PSEUDO_MERSENNE int=1

@@ -29,7 +29,7 @@ under the License.
 
 package amcl
 
-//import "fmt"
+
 
 const SHA384 int=48
 

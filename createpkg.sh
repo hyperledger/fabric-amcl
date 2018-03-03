@@ -19,8 +19,10 @@ find . -name "*.go" -exec grep -l "github.com/milagro-crypto/amcl/version3/go" {
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
 	find . -name "*.go" | xargs sed -i '' 's|github.com/milagro-crypto/amcl/version3/go|github.com/hyperledger/fabric-amcl|g'
+	find . -name "*.go" | xargs sed -i '' 's|//import.*||g'
 else
 	find . -name "*.go" | xargs sed -i 's|github.com/milagro-crypto/amcl/version3/go|github.com/hyperledger/fabric-amcl|g'
+	find . -name "*.go" | xargs sed -i 's|//import.*||g'
 fi
 popd
 rm -Rf src

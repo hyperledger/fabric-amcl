@@ -18,7 +18,7 @@ under the License.
 */
 
 package FP256BN
-//import "fmt"
+
 
 const WEIERSTRASS int=0
 const EDWARDS int=1

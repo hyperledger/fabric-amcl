@@ -21,7 +21,7 @@ under the License.
 
 package FP256BN
 
-//import "fmt"
+
 
 type ECP2 struct {
 	x *FP2

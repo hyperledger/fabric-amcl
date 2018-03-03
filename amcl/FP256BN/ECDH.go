@@ -21,7 +21,7 @@ under the License.
 
 package FP256BN
 
-//import "fmt"
+
 import "github.com/hyperledger/fabric-amcl/amcl"
 
 const INVALID_PUBLIC_KEY int=-2
