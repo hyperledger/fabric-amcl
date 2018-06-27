@@ -5,13 +5,15 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-
+set -e -x
 rm -Rf amcl
 export GOPATH=$PWD
 mkdir -p $GOPATH/src
+set +e
 go get github.com/milagro-crypto/amcl/version3/go
 pushd $GOPATH/src/github.com/milagro-crypto/amcl/version3/go
-echo "20" | python config64.py
+echo "22" | python config64.py
+set -e
 popd
 cp -R $GOPATH/src/github.com/milagro-crypto/amcl/version3/go/amcl .
 pushd amcl/FP256BN
