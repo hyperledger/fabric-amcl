@@ -6,24 +6,24 @@
 #
 
 set -e -x
-rm -Rf amcl
+rm -Rf core
 export GOPATH=$PWD
 mkdir -p $GOPATH/src
 set +e
-go get github.com/milagro-crypto/amcl/version3/go
-pushd $GOPATH/src/github.com/milagro-crypto/amcl/version3/go
-echo "22" | python config64.py
+go get github.com/miracl/core/go
+pushd $GOPATH/src/github.com/miracl/core/go
+echo "25" | python config64.py
 set -e
 popd
-cp -R $GOPATH/src/github.com/milagro-crypto/amcl/version3/go/amcl .
-pushd amcl/FP256BN
-find . -name "*.go" -exec grep -l "github.com/milagro-crypto/amcl/version3/go" {} \;
+cp -R $GOPATH/src/github.com/miracl/core/go/core .
+pushd core/FP256BN
+find . -name "*.go" -exec grep -l "github.com/miracl/core/go" {} \;
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-	find . -name "*.go" | xargs sed -i '' 's|github.com/milagro-crypto/amcl/version3/go|github.com/hyperledger/fabric-amcl|g'
+	find . -name "*.go" | xargs sed -i '' 's|github.com/miracl/core/go|github.com/hyperledger/fabric-amcl|g'
 	find . -name "*.go" | xargs sed -i '' 's|//import.*||g'
 else
-	find . -name "*.go" | xargs sed -i 's|github.com/milagro-crypto/amcl/version3/go|github.com/hyperledger/fabric-amcl|g'
+	find . -name "*.go" | xargs sed -i 's|github.com/miracl/core/go|github.com/hyperledger/fabric-amcl|g'
 	find . -name "*.go" | xargs sed -i 's|//import.*||g'
 fi
 popd
