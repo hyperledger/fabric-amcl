@@ -1,18 +1,18 @@
 
-Welcome to fabric-amcl repository. This repository helps to hold and handle the amcl package(s) we need in migrating 3rd party golang dependency management tools of hyperledger/fabric, from [govendor](https://github.com/kardianos/govendor) to [dep](https://github.com/golang/dep/).
+# Hyperledger Fabric AMCL
 
-Starting form `release-1.2`, this repository has been imported as dependencies in Fabric. See in [Package config file [dep]](https://github.com/hyperledger/fabric/blob/release-1.2/Gopkg.toml)
+Welcome to fabric-amcl repository. This repository holds cryptographic primitives needed to support [Identity Mixer credentials](https://hyperledger-fabric.readthedocs.io/en/latest/idemix.html) in Hyperledger Fabric.
 
-# History
+New projects should import `github.com/hyperledger/fabric-amcl/core` as it uses the latest version of the [Apache Milagro Crypto](https://milagro.apache.org/) Go library.
 
->[FAB-7083](https://jira.hyperledger.org/browse/FAB-7083)  
->[FAB-8488](https://jira.hyperledger.org/browse/FAB-8488)  
+`github.com/hyperledger/fabric-amcl/amcl` is deprecated.
+
 
 # Build
 
-**Python3.x** is neccessary as `milagro-crypto/amcl` requirement
+**Python3.x** and **sed** are required.
 
-Run `./createpkg.sh` to generate `./amcl` directory
+Run `./createpkg.sh` to generate `./core` directory.
 
 # Contribution
 
