@@ -1,5 +1,5 @@
 
-Welcome to fabric-amcl repository. This repository helps to hold and handle the amcl package(s) we need in migrating 3rd party golang dependency management tools of hyperledger/fabric, from [govendor](https://github.com/kardianos/govendor) to [dep](https://github.com/golang/dep/).
+Welcome to the fabric-amcl repository. This repository holds the amcl package(s) we use in hyperledger/fabric in a go-gettable format. This allows us to use [dep](https://github.com/golang/dep/) to manage our dependencies.
 
 Starting form `release-1.2`, this repository has been imported as dependencies in Fabric. See in [Package config file [dep]](https://github.com/hyperledger/fabric/blob/release-1.2/Gopkg.toml)
 
@@ -10,7 +10,7 @@ Starting form `release-1.2`, this repository has been imported as dependencies i
 
 # Build
 
-**Python3.x** is neccessary as `milagro-crypto/amcl` requirement
+**Python3.x** is neccessary as `miracl/amcl` requirement
 
 Run `./createpkg.sh` to generate `./amcl` directory
 
