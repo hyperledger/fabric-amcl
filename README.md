@@ -12,7 +12,9 @@ Starting form `release-1.2`, this repository has been imported as dependencies i
 
 **Python3.x** is neccessary as `miracl/amcl` requirement
 
-Run `./createpkg.sh` to generate `./amcl` directory
+Run `./createpkg-miraclAmcl.sh` to generate `./amcl` directory
+
+Run `./createpkg-miraclCore.sh` to generate `./core` directory
 
 # Contribution
 
