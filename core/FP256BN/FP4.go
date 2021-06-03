@@ -23,7 +23,7 @@
 
 package FP256BN
 import "github.com/hyperledger/fabric-amcl/core"
-//import "fmt"
+
 
 type FP4 struct {
 	a *FP2

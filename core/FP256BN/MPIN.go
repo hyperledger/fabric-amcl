@@ -23,7 +23,7 @@ package FP256BN
 
 import "github.com/hyperledger/fabric-amcl/core"
 
-//import "fmt"
+
 const MFS int = int(MODBYTES)
 const MGS int = int(MODBYTES)
 const BAD_PARAMS int = -11
