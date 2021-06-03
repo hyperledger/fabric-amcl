@@ -18,7 +18,7 @@
  */
 
 package FP256BN
-//import "fmt"
+
 /* Elliptic Curve Point Structure */
 
 type ECP struct {

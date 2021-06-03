@@ -25,7 +25,7 @@ import "strconv"
 import "math/bits"
 import "github.com/hyperledger/fabric-amcl/core"
 
-//import "fmt"
+
 
 type BIG struct {
 	w [NLEN]Chunk
@@ -380,6 +380,7 @@ func (r *BIG) Plus(x *BIG) *BIG {
 	for i := 0; i < NLEN; i++ {
 		s.w[i] = r.w[i] + x.w[i]
 	}
+	s.norm()
 	return s
 }
 

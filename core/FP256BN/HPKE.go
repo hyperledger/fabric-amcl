@@ -23,7 +23,7 @@
 
 package FP256BN
 
-//import "fmt"
+
 import "github.com/hyperledger/fabric-amcl/core"
 
 func reverse(X []byte) {

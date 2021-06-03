@@ -21,7 +21,7 @@
 
 package FP256BN
 
-//import "fmt"
+
 
 // Point doubling for pairings
 func dbl(A *ECP2, AA *FP2, BB *FP2, CC *FP2) {
