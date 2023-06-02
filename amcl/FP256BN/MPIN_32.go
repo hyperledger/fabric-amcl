@@ -1,4 +1,4 @@
-//go:build amd64 || arm64
+//go:build 386 || arm
 
 /*
 Licensed to the Apache Software Foundation (ASF) under one
@@ -23,11 +23,8 @@ under the License.
 
 package FP256BN
 
-import (
-	"time"
-
-	"github.com/hyperledger/fabric-amcl/amcl"
-)
+import "time"
+import "github.com/hyperledger/fabric-amcl/amcl"
 
 const MFS int = int(MODBYTES)
 const MGS int = int(MODBYTES)

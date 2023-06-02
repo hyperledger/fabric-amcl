@@ -1,4 +1,5 @@
-//go:build amd64 || arm64
+//go:build 386
+// +build 386
 
 package FP256BN
 
@@ -12,7 +13,7 @@ const GENERALISED_MERSENNE int = 3
 const MODBITS uint = 256        /* Number of bits in Modulus */
 const MOD8 uint = 3             /* Modulus mod 8 */
 const MODTYPE int = NOT_SPECIAL //NOT_SPECIAL
-const FEXCESS int32 = ((int32(1) << 24) - 1)
+const FEXCESS int32 = ((int32(1) << 14) - 1)
 
 // Modulus Masks
 const OMASK Chunk = ((Chunk(-1)) << (MODBITS % BASEBITS))

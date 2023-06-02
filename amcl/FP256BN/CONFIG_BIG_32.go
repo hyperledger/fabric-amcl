@@ -1,10 +1,10 @@
-//go:build amd64 || arm64
+//go:build 386 || arm
 
 package FP256BN
 
 // BIG length in bytes and number base
 const MODBYTES uint = 32
-const BASEBITS uint = 56
+const BASEBITS uint = 28
 
 // BIG lengths and Masks
 const NLEN int = int((1 + ((8*MODBYTES - 1) / BASEBITS)))

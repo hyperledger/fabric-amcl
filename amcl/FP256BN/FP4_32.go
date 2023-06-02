@@ -1,4 +1,4 @@
-//go:build amd64 || arm64
+//go:build 386 || arm
 
 /*
 Licensed to the Apache Software Foundation (ASF) under one
