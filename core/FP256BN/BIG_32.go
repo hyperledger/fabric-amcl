@@ -1,4 +1,4 @@
-//go:build amd64 || arm64
+//go:build 386 || arm
 
 /*
  * Copyright (c) 2012-2020 MIRACL UK Ltd.
@@ -24,7 +24,6 @@
 package FP256BN
 
 import (
-	"math/bits"
 	"strconv"
 
 	"github.com/hyperledger/fabric-amcl/core"
@@ -38,7 +37,7 @@ type DBIG struct {
 	w [2 * NLEN]Chunk
 }
 
-/***************** 64-bit specific code ****************/
+/***************** 32-bit specific code ****************/
 
 /* First the 32/64-bit dependent BIG code */
 /* Note that because of the lack of a 128-bit integer, 32 and 64-bit code needs to be done differently */
@@ -46,15 +45,39 @@ type DBIG struct {
 /* return a*b as DBIG */
 func mul(a *BIG, b *BIG) *DBIG {
 	c := NewDBIG()
-	carry := Chunk(0)
+
+	//	BIGMULS+=1;
+
+	var d [NLEN]DChunk
 
 	for i := 0; i < NLEN; i++ {
-		carry = 0
-		for j := 0; j < NLEN; j++ {
-			carry, c.w[i+j] = muladd(a.w[i], b.w[j], carry, c.w[i+j])
-		}
-		c.w[NLEN+i] = carry
+		d[i] = DChunk(a.w[i]) * DChunk(b.w[i])
 	}
+	s := d[0]
+	t := s
+	c.w[0] = Chunk(t) & BMASK
+	co := t >> BASEBITS
+
+	for k := 1; k < NLEN; k++ {
+		s += d[k]
+		t = co + s
+		for i := k; i >= 1+k/2; i-- {
+			t += DChunk(a.w[i]-a.w[k-i]) * DChunk(b.w[k-i]-b.w[i])
+		}
+		c.w[k] = Chunk(t) & BMASK
+		co = t >> BASEBITS
+	}
+
+	for k := NLEN; k < 2*NLEN-1; k++ {
+		s -= d[k-NLEN]
+		t = co + s
+		for i := NLEN - 1; i >= 1+k/2; i-- {
+			t += DChunk(a.w[i]-a.w[k-i]) * DChunk(b.w[k-i]-b.w[i])
+		}
+		c.w[k] = Chunk(t) & BMASK
+		co = t >> BASEBITS
+	}
+	c.w[2*NLEN-1] = Chunk(co)
 
 	return c
 }
@@ -62,76 +85,114 @@ func mul(a *BIG, b *BIG) *DBIG {
 /* return a^2 as DBIG */
 func sqr(a *BIG) *DBIG {
 	c := NewDBIG()
-	carry := Chunk(0)
+	//	BIGSQRS+=1;
+	t := DChunk(a.w[0]) * DChunk(a.w[0])
+	c.w[0] = Chunk(t) & BMASK
+	co := t >> BASEBITS
 
-	for i := 0; i < NLEN; i++ {
-		carry = 0
-		for j := i + 1; j < NLEN; j++ {
-			//if a.w[i]<0 {fmt.Printf("Negative m i in sqr\n")}
-			//if a.w[j]<0 {fmt.Printf("Negative m j in sqr\n")}
-			carry, c.w[i+j] = muladd(2*a.w[i], a.w[j], carry, c.w[i+j])
+	for j := 1; j < NLEN-1; {
+		t = DChunk(a.w[j]) * DChunk(a.w[0])
+		for i := 1; i < (j+1)/2; i++ {
+			t += DChunk(a.w[j-i]) * DChunk(a.w[i])
 		}
-		c.w[NLEN+i] = carry
+		t += t
+		t += co
+		c.w[j] = Chunk(t) & BMASK
+		co = t >> BASEBITS
+		j++
+		t = DChunk(a.w[j]) * DChunk(a.w[0])
+		for i := 1; i < (j+1)/2; i++ {
+			t += DChunk(a.w[j-i]) * DChunk(a.w[i])
+		}
+		t += t
+		t += co
+		t += DChunk(a.w[j/2]) * DChunk(a.w[j/2])
+		c.w[j] = Chunk(t) & BMASK
+		co = t >> BASEBITS
+		j++
 	}
 
-	for i := 0; i < NLEN; i++ {
-		//if a.w[i]<0 {fmt.Printf("Negative m s in sqr\n")}
-		top, bot := muladd(a.w[i], a.w[i], 0, c.w[2*i])
-
-		c.w[2*i] = bot
-		c.w[2*i+1] += top
+	for j := NLEN - 1 + (NLEN % 2); j < DNLEN-3; {
+		t = DChunk(a.w[NLEN-1]) * DChunk(a.w[j-NLEN+1])
+		for i := j - NLEN + 2; i < (j+1)/2; i++ {
+			t += DChunk(a.w[j-i]) * DChunk(a.w[i])
+		}
+		t += t
+		t += co
+		c.w[j] = Chunk(t) & BMASK
+		co = t >> BASEBITS
+		j++
+		t = DChunk(a.w[NLEN-1]) * DChunk(a.w[j-NLEN+1])
+		for i := j - NLEN + 2; i < (j+1)/2; i++ {
+			t += DChunk(a.w[j-i]) * DChunk(a.w[i])
+		}
+		t += t
+		t += co
+		t += DChunk(a.w[j/2]) * DChunk(a.w[j/2])
+		c.w[j] = Chunk(t) & BMASK
+		co = t >> BASEBITS
+		j++
 	}
-	c.norm()
+
+	t = DChunk(a.w[NLEN-2]) * DChunk(a.w[NLEN-1])
+	t += t
+	t += co
+	c.w[DNLEN-3] = Chunk(t) & BMASK
+	co = t >> BASEBITS
+
+	t = DChunk(a.w[NLEN-1])*DChunk(a.w[NLEN-1]) + co
+	c.w[DNLEN-2] = Chunk(t) & BMASK
+	co = t >> BASEBITS
+	c.w[DNLEN-1] = Chunk(co)
+
 	return c
 }
 
-func monty(md *BIG, mc Chunk, d *DBIG) *BIG {
-	carry := Chunk(0)
-	m := Chunk(0)
-	for i := 0; i < NLEN; i++ {
-		if mc == -1 {
-			m = (-d.w[i]) & BMASK
-		} else {
-			if mc == 1 {
-				m = d.w[i]
-			} else {
-				m = (mc * d.w[i]) & BMASK
-			}
-		}
+func monty(m *BIG, mc Chunk, d *DBIG) *BIG {
+	var dd [NLEN]DChunk
 
-		carry = 0
-		for j := 0; j < NLEN; j++ {
-			carry, d.w[i+j] = muladd(m, md.w[j], carry, d.w[i+j])
-			//if m<0 {fmt.Printf("Negative m in monty\n")}
-			//if md.w[j]<0 {fmt.Printf("Negative m in monty\n")}
-		}
-		d.w[NLEN+i] += carry
-	}
-
+	var v [NLEN]Chunk
 	b := NewBIG()
-	for i := 0; i < NLEN; i++ {
-		b.w[i] = d.w[NLEN+i]
+
+	t := DChunk(d.w[0])
+	v[0] = (Chunk(t) * mc) & BMASK
+	t += DChunk(v[0]) * DChunk(m.w[0])
+	c := (t >> BASEBITS) + DChunk(d.w[1])
+	s := DChunk(0)
+
+	for k := 1; k < NLEN; k++ {
+		t = c + s + DChunk(v[0])*DChunk(m.w[k])
+		for i := k - 1; i > k/2; i-- {
+			t += DChunk(v[k-i]-v[i]) * DChunk(m.w[i]-m.w[k-i])
+		}
+		v[k] = (Chunk(t) * mc) & BMASK
+		t += DChunk(v[k]) * DChunk(m.w[0])
+		c = (t >> BASEBITS) + DChunk(d.w[k+1])
+		dd[k] = DChunk(v[k]) * DChunk(m.w[k])
+		s += dd[k]
 	}
-	b.norm()
+	for k := NLEN; k < 2*NLEN-1; k++ {
+		t = c + s
+		for i := NLEN - 1; i >= 1+k/2; i-- {
+			t += DChunk(v[k-i]-v[i]) * DChunk(m.w[i]-m.w[k-i])
+		}
+		b.w[k-NLEN] = Chunk(t) & BMASK
+		c = (t >> BASEBITS) + DChunk(d.w[k+1])
+		s -= dd[k-NLEN+1]
+	}
+	b.w[NLEN-1] = Chunk(c) & BMASK
 	return b
 }
 
 /* set this[i]+=x*y+c, and return high part */
 func muladd(a Chunk, b Chunk, c Chunk, r Chunk) (Chunk, Chunk) {
-
-	tp, bt := bits.Mul64(uint64(a), uint64(b)) // use math/bits intrinsic
-	bot := Chunk(bt & uint64(BMASK))
-	top := Chunk((tp << (64 - BASEBITS)) | (bt >> BASEBITS))
-	bot += c
-	bot += r
-	carry := bot >> BASEBITS
-	bot &= BMASK
-	top += carry
+	var prod = DChunk(a)*DChunk(b) + DChunk(c) + DChunk(r)
+	bot := Chunk(prod) & BMASK
+	top := Chunk(prod >> BASEBITS)
 	return top, bot
-
 }
 
-/************************************************************/
+/***************************************************************************/
 
 func (r *BIG) get(i int) Chunk {
 	return r.w[i]
@@ -416,8 +477,6 @@ func (r *BIG) pxmul(c int) *DBIG {
 	carry := Chunk(0)
 	for j := 0; j < NLEN; j++ {
 		carry, m.w[j] = muladd(r.w[j], Chunk(c), carry, m.w[j])
-		//if c<0 {fmt.Printf("Negative c in pxmul\n")}
-		//if r.w[j]<0 {fmt.Printf("Negative c in pxmul\n")}
 	}
 	m.w[NLEN] = carry
 	return m
@@ -467,8 +526,6 @@ func (r *BIG) pmul(c int) Chunk {
 		ak := r.w[i]
 		r.w[i] = 0
 		carry, r.w[i] = muladd(ak, Chunk(c), carry, r.w[i])
-		//if c<0 {fmt.Printf("Negative c in pmul\n")}
-		//if ak<0 {fmt.Printf("Negative c in pmul\n")}
 	}
 	return carry
 }
@@ -478,7 +535,6 @@ func (r *BIG) tobytearray(b []byte, n int) {
 	//r.norm();
 	c := NewBIGcopy(r)
 	c.norm()
-
 	for i := int(MODBYTES) - 1; i >= 0; i-- {
 		b[i+n] = byte(c.w[0])
 		c.fshr(8)

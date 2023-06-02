@@ -1,4 +1,4 @@
-//go:build amd64 || arm64
+//go:build 386 || arm
 
 /*
  * Copyright (c) 2012-2020 MIRACL UK Ltd.
@@ -23,6 +23,7 @@
 
 package FP256BN
 
-type Chunk int64
+type Chunk int32
+type DChunk int64
 
-const CHUNK int = 64 /* Set word size */
+const CHUNK int = 32 /* Set word size */

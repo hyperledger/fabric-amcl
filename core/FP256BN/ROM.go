@@ -1,3 +1,5 @@
+//go:build amd64 || arm64
+
 /*
  * Copyright (c) 2012-2020 MIRACL UK Ltd.
  *
