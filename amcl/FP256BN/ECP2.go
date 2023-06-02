@@ -1,3 +1,5 @@
+//go:build amd64 || arm64
+
 /*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
@@ -20,8 +22,6 @@ under the License.
 /* MiotCL Weierstrass elliptic curve functions over FP2 */
 
 package FP256BN
-
-
 
 type ECP2 struct {
 	x *FP2

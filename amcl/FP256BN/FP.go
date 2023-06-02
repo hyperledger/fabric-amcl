@@ -1,3 +1,5 @@
+//go:build amd64 || arm64
+
 /*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
@@ -21,8 +23,6 @@ under the License.
 /* CLINT mod p functions */
 
 package FP256BN
-
-
 
 //const NOT_SPECIAL int = 0
 //const PSEUDO_MERSENNE int = 1
