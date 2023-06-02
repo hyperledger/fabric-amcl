@@ -1,4 +1,4 @@
-//go:build amd64 || arm64
+//go:build !386 && !arm
 
 package FP256BN
 
