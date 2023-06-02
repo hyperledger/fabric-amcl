@@ -1,5 +1,4 @@
-//go:build 386
-// +build 386
+//go:build 386 || arm
 
 package FP256BN
 
